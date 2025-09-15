@@ -9,11 +9,11 @@ services:
       - app-network
 
   book-service:
-    build: ./book-service
-    image: book-service:latest
+    #build: ./book-service
+    image: morganokanyair/book-service:v1
     container_name: book-service
-    ports:
-      - 3000:3000
+    # ports:
+    #   - 3000:3000
     networks:
       - app-network
     environment:
@@ -22,18 +22,32 @@ services:
       - book-service-db
 
   loan-service:
-    build: ./loan-service
-    image: loan-service:latest
+  #  build: ./loan-service
+    image: morganokanyair/loan-service:v1
     container_name: loan-service
-    ports:
-      - 3001:3001
+    # ports:
+    #  - 3001:3001
     networks:
       - app-network
     environment:
       - BOOK_SERVICE_URL=http://book-service:3000
 
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - app-network
+    depends_on:
+      - book-service
+      - loan-service
+
 volumes:
   mongo-data:
+
 
 networks:
   app-network:

@@ -1,0 +1,28 @@
+# version: "3.8"
+services:
+  book-service:
+    build: .
+    image: book-service:latest
+    container_name: book-service
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    environment:
+      - DATABASE_URL=mongodb://book-service-db:27017/books 
+    depends_on:
+      - book-service-db   
+  book-service-db:
+    image: mongo:latest
+    container_name: book-service-db
+    networks:
+      - app-network
+    volumes:
+      - mongodb-data:/data/db  
+
+volumes:
+  mongodb-data:
+
+networks:
+  app-network:
+    driver: bridge        
